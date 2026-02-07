@@ -1,0 +1,205 @@
+/* ================================
+   Global
+================================ */
+* {
+    box-sizing: border-box;
+}
+
+body {
+    margin: 0;
+    font-family:
+        'Inter',
+        system-ui,
+        -apple-system,
+        BlinkMacSystemFont,
+        sans-serif;
+    background: #f8fafc;
+    color: #0f172a;
+}
+
+/* ================================
+   Page container
+================================ */
+.container {
+    max-width: 1400px;
+    margin: auto;
+    padding: 24px;
+}
+
+/* ================================
+   Selector
+================================ */
+.button-container {
+    display: flex;
+    gap: 16px;
+    margin-bottom: 24px;
+}
+
+.button-container select {
+    background: #ffffff;
+    border: 1px solid #cbd5e1;
+    padding: 10px 14px;
+    font-size: 14px;
+    border-radius: 8px;
+    cursor: pointer;
+}
+
+.button-container select:hover {
+    border-color: #2563eb;
+}
+
+/* ================================
+   Timetable table
+================================ */
+table {
+    width: 100%;
+    table-layout: fixed;
+    border-collapse: separate;
+    border-spacing: 0;
+    background: #ffffff;
+    border-radius: 14px;
+    overflow: hidden;
+    box-shadow: 0 12px 32px rgba(15, 23, 42, 0.08);
+}
+
+/* ================================
+   Header
+================================ */
+thead th {
+    background: #f1f5f9;
+    color: #1e293b;
+    font-weight: 600;
+    font-size: 14px;
+    padding: 14px;
+    border-bottom: 1px solid #e2e8f0;
+    text-align: center;
+}
+
+.time-specific {
+    width: 110px;
+}
+
+/* ================================
+   Time column
+================================ */
+tbody th.time {
+    background: #f8fafc;
+    color: #475569;
+    font-weight: 600;
+    font-size: 13px;
+    white-space: nowrap;
+    border-right: 1px solid #e2e8f0;
+}
+
+/* ================================
+   Cells
+================================ */
+tbody td {
+    padding: 10px;
+    border-right: 1px solid #e2e8f0;
+    border-bottom: 1px solid #e2e8f0;
+    vertical-align: top;
+}
+
+/* Empty slot */
+.cell-no-value {
+    background: #f8fafc;
+}
+
+/* ================================
+   Interactive cell
+================================ */
+.cell {
+    cursor: pointer;
+    transition:
+        background 0.15s ease,
+        box-shadow 0.15s ease;
+
+    /* 🔑 critical layout safety */
+    white-space: normal;
+    word-break: break-word;
+    overflow-wrap: anywhere;
+}
+
+.cell:hover {
+    background: rgba(0, 0, 0, 0.03);
+}
+
+.cell.collapsed {
+    max-height: 90px;
+    overflow: hidden;
+}
+
+.cell.expanded {
+    box-shadow: inset 0 0 0 2px #2563eb;
+    background: #ffffff;
+}
+
+/* ================================
+   Cell content
+================================ */
+.schedule-input {
+    padding: 2px 0;
+    font-size: 12px;
+    line-height: 1.35;
+    text-align: center;
+
+    /* 🔑 wrapping safety for long codes */
+    word-break: break-word;
+    overflow-wrap: anywhere;
+}
+
+/* Code */
+.schedule-input:first-child {
+    font-weight: 700;
+    font-size: 13px;
+}
+
+/* Room */
+.schedule-input:nth-child(2) {
+    color: #475569;
+    font-weight: 500;
+}
+
+/* Type */
+.schedule-input:last-child {
+    font-size: 11px;
+    font-weight: 600;
+    opacity: 0.8;
+}
+
+/* ================================
+   Color coding (flat, modern)
+================================ */
+
+/* Lecture */
+.cell.green {
+    background: #ecfdf5;
+    border-left: 4px solid #10b981;
+}
+
+/* Tutorial */
+.cell.purple {
+    background: #f5f3ff;
+    border-left: 4px solid #8b5cf6;
+}
+
+/* Practical */
+.cell.yellow {
+    background: #fffbeb;
+    border-left: 4px solid #f59e0b;
+}
+
+/* ================================
+   Mobile safety
+================================ */
+@media (max-width: 1100px) {
+    body {
+        overflow-x: auto;
+    }
+
+    table {
+        min-width: 1100px;
+    }
+}
+
