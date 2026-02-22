@@ -27,68 +27,101 @@ body {
 }
 
 /* ================================
-   Selector
+   Filter bar
 ================================ */
-.button-container {
+.filter-bar {
     display: flex;
-    gap: 16px;
-    margin-bottom: 24px;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-bottom: 28px;
 }
 
-.button-container select {
-    background: #ffffff;
-    border: 1px solid #cbd5e1;
-    padding: 10px 14px;
-    font-size: 14px;
-    border-radius: 8px;
-    cursor: pointer;
+/* ================================
+   Day tables container
+================================ */
+.day-tables-container {
+    display: flex;
+    flex-direction: column;
+    gap: 48px;
 }
 
-.button-container select:hover {
-    border-color: #2563eb;
+.day-heading {
+    font-size: 22px;
+    font-weight: 700;
+    color: #1e293b;
+    margin: 0 0 12px;
+    padding-left: 4px;
+}
+
+/* ================================
+   Horizontal scroll wrapper
+================================ */
+.table-scroll-wrapper {
+    overflow: auto;
+    max-height: 80vh;
+    border-radius: 14px;
+    box-shadow: 0 12px 32px rgba(15, 23, 42, 0.08);
 }
 
 /* ================================
    Timetable table
 ================================ */
 table {
-    width: 100%;
-    table-layout: fixed;
+    table-layout: auto;
     border-collapse: separate;
     border-spacing: 0;
     background: #ffffff;
-    border-radius: 14px;
-    overflow: hidden;
-    box-shadow: 0 12px 32px rgba(15, 23, 42, 0.08);
 }
 
 /* ================================
-   Header
+   Header  (sticky horizontally AND vertically)
 ================================ */
 thead th {
-    background: #f1f5f9;
+    position: sticky;
+    top: 0;
+    z-index: 2;
+    background: #e2e8f0;
+    /* Darker header background */
     color: #1e293b;
     font-weight: 600;
-    font-size: 14px;
-    padding: 14px;
+    font-size: 13px;
+    padding: 10px 8px;
     border-bottom: 1px solid #e2e8f0;
     text-align: center;
+    white-space: nowrap;
 }
 
-.time-specific {
-    width: 110px;
+.subgroup-header {
+    min-width: 80px;
+    max-width: 80px;
 }
 
 /* ================================
-   Time column
+   Sticky time column  (left-pinned)
 ================================ */
+thead th.time-col-header,
 tbody th.time {
-    background: #f8fafc;
-    color: #475569;
+    position: sticky;
+    left: 0;
+    z-index: 3;
+}
+
+thead th.time-col-header {
+    z-index: 4;
+    /* corner cell: above both sticky axes */
+    background: #e2e8f0;
+    min-width: 90px;
+}
+
+tbody th.time {
+    background: #e2e8f0;
+    /* Darker time column background */
+    color: #334155;
     font-weight: 600;
     font-size: 13px;
     white-space: nowrap;
     border-right: 1px solid #e2e8f0;
+    padding: 10px 12px;
 }
 
 /* ================================
@@ -99,6 +132,7 @@ tbody td {
     border-right: 1px solid #e2e8f0;
     border-bottom: 1px solid #e2e8f0;
     vertical-align: top;
+    min-width: 100px;
 }
 
 /* Empty slot */
@@ -111,11 +145,12 @@ tbody td {
 ================================ */
 .cell {
     cursor: pointer;
+    background: #ffffff;
+    /* fallback */
     transition:
         background 0.15s ease,
         box-shadow 0.15s ease;
 
-    /* 🔑 critical layout safety */
     white-space: normal;
     word-break: break-word;
     overflow-wrap: anywhere;
@@ -123,16 +158,6 @@ tbody td {
 
 .cell:hover {
     background: rgba(0, 0, 0, 0.03);
-}
-
-.cell.collapsed {
-    max-height: 90px;
-    overflow: hidden;
-}
-
-.cell.expanded {
-    box-shadow: inset 0 0 0 2px #2563eb;
-    background: #ffffff;
 }
 
 /* ================================
@@ -144,7 +169,6 @@ tbody td {
     line-height: 1.35;
     text-align: center;
 
-    /* 🔑 wrapping safety for long codes */
     word-break: break-word;
     overflow-wrap: anywhere;
 }
@@ -161,45 +185,49 @@ tbody td {
     font-weight: 500;
 }
 
-/* Type */
+/* Type (Pill) */
 .schedule-input:last-child {
     font-size: 11px;
     font-weight: 600;
-    opacity: 0.8;
+    width: fit-content;
+    margin: 4px auto 0;
+    padding: 2px 8px;
+    border-radius: 9999px;
 }
 
 /* ================================
    Color coding (flat, modern)
 ================================ */
 
-/* Lecture */
+/* Lecture Pill */
 .cell.green {
-    background: #ecfdf5;
-    border-left: 4px solid #10b981;
+    background: #f0fdf4;
+    /* Very faint green bg */
 }
 
-/* Tutorial */
-.cell.purple {
-    background: #f5f3ff;
-    border-left: 4px solid #8b5cf6;
+.cell.green .schedule-input:last-child {
+    background: #008a27;
+    color: #ffffff;
 }
 
-/* Practical */
+/* Tutorial Pill */
+.cell.blue {
+    background: #eff6ff;
+    /* Very faint blue bg */
+}
+
+.cell.blue .schedule-input:last-child {
+    background: #2563eb;
+    color: #ffffff;
+}
+
+/* Practical Pill */
 .cell.yellow {
     background: #fffbeb;
-    border-left: 4px solid #f59e0b;
+    /* Very faint yellow bg */
 }
 
-/* ================================
-   Mobile safety
-================================ */
-@media (max-width: 1100px) {
-    body {
-        overflow-x: auto;
-    }
-
-    table {
-        min-width: 1100px;
-    }
+.cell.yellow .schedule-input:last-child {
+    background: #d97706;
+    color: #ffffff;
 }
-
