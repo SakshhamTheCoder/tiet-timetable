@@ -21,7 +21,6 @@ body {
    Page container
 ================================ */
 .container {
-    max-width: 1400px;
     margin: auto;
     padding: 24px;
 }
@@ -32,6 +31,7 @@ body {
 .filter-bar {
     display: flex;
     flex-wrap: wrap;
+    align-items: center;
     gap: 10px;
     margin-bottom: 28px;
 }
@@ -230,4 +230,32 @@ tbody td {
 .cell.yellow .schedule-input:last-child {
     background: #d97706;
     color: #ffffff;
+}
+
+/* ================================
+   Export Button
+================================ */
+.export-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    background: #2563eb;
+    color: #ffffff;
+    font-weight: 600;
+    font-size: 14px;
+    padding: 0 16px;
+    height: 38px;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: background 0.15s ease;
+}
+
+.export-btn:hover {
+    background: #1d4ed8;
+}
+
+.export-btn:active {
+    background: #1e40af;
 }
