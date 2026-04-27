@@ -1,6 +1,6 @@
 import { useMemo, useState } from 'react';
 import Select from 'react-select';
-import { extractVenues } from '../utils/venueUtils';
+import { extractVenues, getUnifiedRoomName } from '../utils/venueUtils';
 
 const timeSlots = [
     '08:00 AM', '08:50 AM', '09:40 AM', '10:30 AM', '11:20 AM',
@@ -43,7 +43,8 @@ function buildRoomMap(allData) {
                 const [code, rawRoom, , type] = entry;
 
                 const venues = extractVenues(rawRoom);
-                for (const room of venues) {
+                for (const raw of venues) {
+                    const room = getUnifiedRoomName(raw);
                     allRooms.add(room);
 
                     if (!roomMap[room]) roomMap[room] = {};
@@ -120,23 +121,40 @@ export default function RoomAvailability({ allData }) {
                                                 );
                                             }
 
-                                            // Use the first entry's type for color
-                                            const primaryType = entries[0].type;
+                                            // Group entries by unique code + type
+                                            const grouped = [];
+                                            for (const e of entries) {
+                                                const existing = grouped.find(g => g.code === e.code && g.type === e.type);
+                                                if (existing) {
+                                                    if (!existing.subgroups.includes(e.subgroup)) {
+                                                        existing.subgroups.push(e.subgroup);
+                                                    }
+                                                } else {
+                                                    grouped.push({ code: e.code, type: e.type, subgroups: [e.subgroup] });
+                                                }
+                                            }
+
+                                            // Use the first entry's type for the main cell background color
+                                            const primaryType = grouped[0].type;
 
                                             return (
                                                 <td
                                                     key={day}
                                                     className={`cell ${getColorClass(primaryType)}`}
                                                 >
-                                                    <div className="schedule-input">
-                                                        {entries[0].code}
-                                                    </div>
-                                                    <div className="schedule-input room-subgroups">
-                                                        {entries.map((e) => e.subgroup).join(', ')}
-                                                    </div>
-                                                    <div className="schedule-input">
-                                                        {primaryType}
-                                                    </div>
+                                                    {grouped.map((g, idx) => (
+                                                        <div key={idx} className={idx > 0 ? 'conflict-separator' : ''}>
+                                                            <div className="schedule-input">
+                                                                {g.code}
+                                                            </div>
+                                                            <div className="schedule-input room-subgroups">
+                                                                {g.subgroups.join(', ')}
+                                                            </div>
+                                                            <div className="schedule-input">
+                                                                {g.type}
+                                                            </div>
+                                                        </div>
+                                                    ))}
                                                 </td>
                                             );
                                         })}

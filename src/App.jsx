@@ -22,7 +22,7 @@ export default function App() {
         <div className="container">
             <h1 style={{ textAlign: 'center' }}>Timetable</h1>
 
-            <div className="view-toggle">
+            {/* <div className="view-toggle">
                 <button
                     className={`view-toggle-btn${view === 'timetable' ? ' active' : ''}`}
                     onClick={() => setView('timetable')}
@@ -35,7 +35,7 @@ export default function App() {
                 >
                     Room Availability
                 </button>
-            </div>
+            </div> */}
 
             {view === 'timetable' ? (
                 <>

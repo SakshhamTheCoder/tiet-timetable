@@ -53,67 +53,92 @@ export default function ScheduleTable({ allData, filters }) {
         return timeSlots;
     }, [filters.time]);
 
+    const isFilterActive = useMemo(() => {
+        return Object.values(filters).some(f => f && f.length > 0);
+    }, [filters]);
+
+    const activeSubgroupsPerDay = useMemo(() => {
+        const map = {};
+        if (!isFilterActive) return map;
+
+        filteredDays.forEach((day) => {
+            map[day] = subgroups.filter((sg) => {
+                return filteredTimeSlots.some((time) => {
+                    const entry = allData[sg]?.[day]?.[time];
+                    return entry && matchesFilter(entry, filters);
+                });
+            });
+        });
+        return map;
+    }, [allData, filters, subgroups, filteredDays, filteredTimeSlots, isFilterActive]);
+
     return (
         <div className="day-tables-container">
-            {filteredDays.map((day) => (
-                <section key={day} className="day-section">
-                    <h2 className="day-heading">{day}</h2>
-                    <div className="table-scroll-wrapper">
-                        <table>
-                            <thead>
-                                <tr>
-                                    <th className="time-col-header">Time</th>
-                                    {subgroups.map((sg) => (
-                                        <th key={sg} className="subgroup-header">
-                                            {sg}
-                                        </th>
-                                    ))}
-                                </tr>
-                            </thead>
+            {filteredDays.map((day) => {
+                const displaySubgroups = isFilterActive ? activeSubgroupsPerDay[day] || [] : subgroups;
 
-                            <tbody>
-                                {filteredTimeSlots.map((time) => (
-                                    <tr key={time}>
-                                        <th className="time">{time}</th>
+                if (isFilterActive && displaySubgroups.length === 0) return null;
 
-                                        {subgroups.map((sg) => {
-                                            const entry =
-                                                allData[sg]?.[day]?.[time];
+                return (
+                    <section key={day} className="day-section">
+                        <h2 className="day-heading">{day}</h2>
+                        <div className="table-scroll-wrapper">
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th className="time-col-header">Time</th>
+                                        {displaySubgroups.map((sg) => (
+                                            <th key={sg} className="subgroup-header">
+                                                {sg}
+                                            </th>
+                                        ))}
+                                    </tr>
+                                </thead>
 
-                                            if (!entry || !matchesFilter(entry, filters))
+                                <tbody>
+                                    {filteredTimeSlots.map((time) => (
+                                        <tr key={time}>
+                                            <th className="time">{time}</th>
+
+                                            {displaySubgroups.map((sg) => {
+                                                const entry =
+                                                    allData[sg]?.[day]?.[time];
+
+                                                if (!entry || !matchesFilter(entry, filters))
+                                                    return (
+                                                        <td
+                                                            key={sg}
+                                                            className="cell-no-value"
+                                                        />
+                                                    );
+
+                                                const [code, room, , type] = entry;
+
                                                 return (
                                                     <td
                                                         key={sg}
-                                                        className="cell-no-value"
-                                                    />
+                                                        className={`cell ${getColorClass(type)}`}
+                                                    >
+                                                        <div className="schedule-input">
+                                                            {code}
+                                                        </div>
+                                                        <div className="schedule-input">
+                                                            {room}
+                                                        </div>
+                                                        <div className="schedule-input">
+                                                            {type}
+                                                        </div>
+                                                    </td>
                                                 );
-
-                                            const [code, room, , type] = entry;
-
-                                            return (
-                                                <td
-                                                    key={sg}
-                                                    className={`cell ${getColorClass(type)}`}
-                                                >
-                                                    <div className="schedule-input">
-                                                        {code}
-                                                    </div>
-                                                    <div className="schedule-input">
-                                                        {room}
-                                                    </div>
-                                                    <div className="schedule-input">
-                                                        {type}
-                                                    </div>
-                                                </td>
-                                            );
-                                        })}
-                                    </tr>
-                                ))}
-                            </tbody>
-                        </table>
-                    </div>
-                </section>
-            ))}
+                                            })}
+                                        </tr>
+                                    ))}
+                                </tbody>
+                            </table>
+                        </div>
+                    </section>
+                );
+            })}
         </div>
     );
 }

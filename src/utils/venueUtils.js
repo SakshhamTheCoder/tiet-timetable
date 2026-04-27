@@ -35,7 +35,10 @@ export function extractVenues(raw) {
 
         // Named labs (AI LAB, PGR LAB, HPC LAB)
         if (part.endsWith('LAB')) {
-            venues.add(part);
+            const prefix = part.replace('LAB', '').trim();
+            if (prefix.length > 0 && !/^[?-\s]+$/.test(prefix)) {
+                venues.add(part);
+            }
         }
     }
 
@@ -58,3 +61,31 @@ export function normalizeVenue(raw) {
     return null;
 }
 
+export function getUnifiedRoomName(room) {
+    if (!room) return '';
+    if (room === 'W/SHOP') return 'W/SHOP';
+    
+    let n = room.toUpperCase();
+    n = n.replace(/[\\/]/g, '');
+    n = n.replace(/\bLAB\b/g, '');
+    n = n.replace(/\s+/g, '');
+
+    // Remove suffix patterns: NA, TA, PG, FIST, NEW followed by optional dash and digits
+    n = n.replace(/(?:NA|TA|PG|FIST|NEW)-?\d*$/g, '');
+    
+    // Standardize letter-number format with dash eg: DBMS2 -> DBMS-2, handling ampersands too
+    n = n.replace(/^([A-Z&]+)-?(\d+.*)$/, '$1-$2');
+
+    // Analog lab and High Voltage lab aliases
+    n = n.replace(/^ANALOG.*B-?(\d+)/, 'ANALOG-B$1');
+    n = n.replace(/^HIGHVOLTAGE.*C-?(\d+)/, 'HIGHVOLTAGE-C$1');
+
+    // Remove any remaining leading/trailing non-alphanumeric (except dashes and ampersands)
+    n = n.replace(/^[^A-Z0-9&]+|[^A-Z0-9&]+$/g, '');
+
+    if (n.length < 2 || /^[-?]+$/.test(n)) {
+        return '';
+    }
+    
+    return n;
+}
